@@ -1,0 +1,30 @@
+
+<div class="container-fluid">
+  <div class="row p-l-50px">
+
+    <h2>Aquarium Predators</h2>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <!-- HTML table for our list of product records -->
+      <table class='table table-hover table-responsive table-bordered'>
+
+        <tr>
+          <th>Name</th>
+          <th>Predators</th>
+        </tr>
+
+        <!-- Use *ngFor directive to loop throught our list of products. -->
+        <tr *ngFor="let sp of speciesDict">
+          <td>{{sp.species.name}}</td>
+          <td>
+            <span *ngFor="let pred of sp.predators">{{pred.name}}</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>

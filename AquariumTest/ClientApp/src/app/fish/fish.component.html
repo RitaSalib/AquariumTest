@@ -1,0 +1,39 @@
+<div class="row p-20px top-buffer">
+  <div class="col-md-12">
+    <a (click)="createFish()" class='btn btn-primary pull-right'>
+      <span class='glyphicon glyphicon-plus'></span> Create Fish
+    </a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+
+    <table class='table table-hover table-responsive table-bordered'>
+
+      <tr>
+        <th>Name</th>
+        <th>Species</th>
+        <th>Color</th>
+        <th>Actions</th>
+      </tr>
+
+
+      <tr *ngFor="let fish of fishes">
+        <td>{{fish.name}}</td>
+        <td>{{fish.species.name}}</td>
+        <td>{{fish.color}}</td>
+        <td>
+
+          <a (click)="viewFish(fish.id)" class='btn btn-primary m-r-5px'>
+            <span class='fa fa-eye'></span> View
+          </a>
+          <a (click)="deleteFish(fish.id)" class='btn btn-danger m-r-5px'>
+            <span class='fa fa-trash'></span> Delete
+          </a>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <router-outlet></router-outlet>
+</div>

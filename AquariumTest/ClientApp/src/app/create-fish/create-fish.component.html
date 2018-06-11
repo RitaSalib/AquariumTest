@@ -1,0 +1,48 @@
+<h1>{{title}}</h1>
+<h3>Fish</h3>
+<hr />
+<div class="container well top-buffer">
+  <form [formGroup]="fishForm" (ngSubmit)="save()" #formDir="ngForm" novalidate>
+    <div class="form-group row">
+      <label class=" control-label col-md-12">Name</label>
+      <div class="col-md-4">
+        <input class="form-control" type="text" formControlName="name" required>
+      </div>
+      <span class="text-danger" *ngIf="name.invalid && formDir.submitted">
+        Name is required.
+      </span>
+    </div>
+    <div class="form-group row">
+      <label class="control-label col-md-12" for="Species">Species</label>
+      <div class="col-md-4">
+        <select class="form-control" data-val="true" formControlName="species">
+          <option *ngFor="let sp of speciesList"
+                  value="{{sp.id}}">
+            {{sp.name}}
+          </option>
+        </select>
+      </div>
+      <span class="text-danger" *ngIf="species.invalid && formDir.submitted">
+        Species is required
+      </span>
+    </div>
+    <div class="form-group row">
+      <label class="control-label col-md-12" for="Color">Color</label>
+      <div class="col-md-4">
+        <select class="form-control" data-val="true" formControlName="color">
+          <option *ngFor="let color of colorList"
+                  value="{{color}}">
+            {{color}}
+          </option>
+        </select>
+      </div>
+      <span class="text-danger" *ngIf="color.invalid && formDir.submitted">
+        Color is required
+      </span>
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-default">Save</button>
+      <button class="btn" (click)="cancel()">Cancel</button>
+    </div>
+  </form>
+</div>

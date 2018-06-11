@@ -1,0 +1,35 @@
+
+<div class="container-fluid">
+  <div class="row p-l-50px">
+
+    <h2>Aquarium Tanks</h2>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+
+      <!-- HTML table for our list of product records -->
+      <table class='table table-hover table-responsive table-bordered'>
+
+        <tr>
+          <th>Name</th>
+          <th>Capacity</th>
+          <th>Action</th>
+        </tr>
+
+        <!-- Use *ngFor directive to loop throught our list of products. -->
+        <tr *ngFor="let tank of tanks">
+          <td>{{tank.name}}</td>
+          <td>{{tank.capacity}}</td>
+          <td>
+            <!-- read one product button -->
+            <a [routerLink]="['/tanks/', tank.id]" class='btn btn-primary m-r-5px'>
+              <span class='glyphicon glyphicon-eye-open'></span> View
+            </a>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+@media (max-width: 767px) {
+  /* On small screens, the nav menu spans the full width of the screen. Leave a space for it. */
+  .body-content {
+    padding-top: 50px;
+  }
+  .top-buffer {
+    margin-top: 20px;
+  }
+
+  .card {
+    text-align: center;
+    border: 1px solid #000;
+    width: 60%;
+    padding: 20px;
+  }
+}
