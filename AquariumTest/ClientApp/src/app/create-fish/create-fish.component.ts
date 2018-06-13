@@ -7,7 +7,10 @@ import { Tank } from '../models/tank';
 import { Species } from '../models/Species';
 import { SpeciesService } from '../services/speciesService.service';
 import { Fish } from '../models/Fish';
-import { forEach } from '@angular/router/src/utils/collection';
+import { TankService } from '../services/tankService.service';
+import { SpeciesPredator } from '../models/SpeciesPredator';
+import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Rx';
 
 @Component({
   selector: 'create-fish',
@@ -21,12 +24,14 @@ export class CreateFishComponent implements OnInit {
   speciesList: Array<any> = [];
   colorList: Array<any> = [];
   fishesInTank: Array<any> = [];
-  title: string = "Create";
+  predatorList: Array<any> = [];
+  title: string = "Add Fish";
   tankId: number;
   errorMessage: any;
 
   constructor(private _fb: FormBuilder, private _route: ActivatedRoute,
-    private _fishService: FishService, private _speciesService: SpeciesService, private _router: Router) {
+    private _fishService: FishService, private _speciesService: SpeciesService,
+    private _router: Router) {
     if (this._route.snapshot.params["tankId"]) {
       this.tankId = this._route.snapshot.params["tankId"];
     }
@@ -38,7 +43,7 @@ export class CreateFishComponent implements OnInit {
       color: ['', [Validators.required]],
     })
 
-   
+
   }
 
   ngOnInit() {
@@ -66,12 +71,29 @@ export class CreateFishComponent implements OnInit {
     this.colorList.push('Orange');
   }
 
-  save() {
+  async save() {
     if (!this.fishForm.valid) {
       return;
     }
 
+    var add = true;
 
+    var canAdd = await this.canbeAdded();
+
+    if (!canAdd) {
+      var res = confirm("Your tank is not compatible, your fish may die");
+
+      if (!res)
+        add = false;
+    }
+
+    if (add) {
+      this.saveFish();
+    }
+     
+  }
+
+  saveFish() {
       this.fish = new Fish();
       this.fish.tankId = this.tankId;
       this.fish.name = this.name.value;
@@ -90,6 +112,43 @@ export class CreateFishComponent implements OnInit {
 
   goBack(): void {
     this._router.navigate(['../'], { relativeTo: this._route });
+  }
+
+  async canbeAdded(): Promise<Boolean>{
+
+    var tankSpeciesIds: Array<number> = [];
+    var tankPredatorIds: Array<number> = [];
+    var fishpredatorIds: Array<number> = [];
+
+    var tankFishes = await this._fishService.getFishes(this.tankId).toPromise();
+    var currentSpecies = await this._speciesService.getSpeciesById(this.species.value).toPromise();
+
+    await Promise.all(tankFishes.map( async(element) => {
+      var fish = element as Fish;
+
+      if (!tankSpeciesIds.includes(fish.speciesId))
+      {
+        tankSpeciesIds.push(fish.speciesId);
+
+        var tankSpecies = await this._speciesService.getSpeciesById(fish.speciesId).toPromise() as Species;
+       
+        await tankSpecies.predators.map(x=> {
+          var sp = x as SpeciesPredator;
+          tankPredatorIds.push(sp.predatorId);
+        })
+      }
+    }));
+
+    currentSpecies.predators.forEach(pred => {
+      fishpredatorIds.push(pred.predatorId);
+    });
+
+    var tankHasPred = fishpredatorIds.filter(function (n) {
+      return tankSpeciesIds.indexOf(n) > -1;
+    }).length > 0;
+
+    var tankHasPreys = tankPredatorIds.includes(currentSpecies.id);
+    return !tankHasPred && !tankHasPreys;
   }
 
   get name() { return this.fishForm.get('name'); }
